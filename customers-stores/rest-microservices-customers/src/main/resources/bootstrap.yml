@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: customers
+  cloud:
+    config:
+      uri: ${CONFIG_SERVER_URI:${vcap.services.${PREFIX:}configserver.credentials.uri:http://user:password@localhost:8888}}
+encrypt:
+  failOnError: false
+
+aws:
+  kms:
+    keyId: 'arn:aws:kms:eu-west-1:869261710414:key/1a0bbf69-1f00-4ced-8ca8-2d0273c12fbd'
+  region: eu-west-1
+     

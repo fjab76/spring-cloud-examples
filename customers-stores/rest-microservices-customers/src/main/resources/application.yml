@@ -1,0 +1,60 @@
+server:
+  port: 9000
+
+endpoints:
+  restart:
+    enabled: true
+  shutdown:
+    enabled: true
+  health:
+    sensitive: false
+
+integration:
+  stores:
+    uri: http://localhost:8081
+    test: '{cipher}CiCW798w++VEme0XUVPnOTwn1utyvhOeGwSTzwzT7q9MvRKTAQEBAgB4lu/fMPvlRJntF1FT5zk8J9brcr4TnhsEk88M0+6vTL0AAABqMGgGCSqGSIb3DQEHBqBbMFkCAQAwVAYJKoZIhvcNAQcBMB4GCWCGSAFlAwQBLjARBAyjqOgp4m0+u2D+3h0CARCAJ+yMkS9FkYy28aNQuWjLfhSsZG17874KwtJOj5hyeM6hsUANYWbu9w=='
+
+stores:
+  ribbon:
+    ServerListRefreshInterval: 1000
+
+eureka:
+  instance:
+    preferIpAddress: true
+    leaseRenewalIntervalInSeconds: 10
+    metadataMap:
+      instanceId: ${vcap.application.instance_id:${spring.application.name}:${spring.application.instance_id:${server.port}}}
+  client:
+    region: default
+    registryFetchIntervalSeconds: 5
+    serviceUrl:
+      defaultZone: http://${EUREKA_HOST:localhost}:${EUREKA_PORT:8761}/eureka/
+    #availabilityZones:
+      #default: ${APPLICATION_DOMAIN:${DOMAIN:defaultZone}}
+
+# For demo only allow more hystrix connections
+hystrix:
+  stream:
+    maxConcurrentConnections: 20
+    bus:
+      enabled: true
+
+spring:
+  rabbitmq:
+    addresses: ${vcap.services.${PREFIX:}rabbitmq.credentials.uri:amqp://${RABBITMQ_HOST:localhost}:${RABBITMQ_PORT:5672}}
+
+logging:
+  level:
+    com.netflix.discovery: 'OFF'
+
+---
+spring:
+  profiles: mysql
+  datasource:
+    url: jdbc:mysql://localhost/test
+    username: root
+    password:
+    driver-class-name: com.mysql.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
