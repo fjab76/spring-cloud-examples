@@ -1,0 +1,114 @@
+version: '2'
+services:
+  mongo:
+    image: mongo
+    ports:
+      - "27017:27017"
+
+  rabbitmq:
+    image: rabbitmq
+    ports:
+      - "5672:5672"
+
+  eureka:
+    build: /Users/franciscoalvarez/MyProjects/spring-cloud-examples/eureka/src/main/docker/
+    ports:
+      - "8761:8761"
+
+  customer:
+    build: /Users/franciscoalvarez/MyProjects/spring-cloud-examples/customers-stores/rest-microservices-customers/src/main/docker/
+    ports:
+      - "9000:9000"
+    links:
+      - rabbitmq
+      - eureka
+    environment:
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_PORT=5672
+      - EUREKA_HOST=eureka
+      - EUREKA_PORT=8761
+
+  store:
+    build: /Users/franciscoalvarez/MyProjects/spring-cloud-examples/customers-stores/rest-microservices-store/src/main/docker/
+    ports:
+      - "8081:8081"
+    links:
+      - rabbitmq
+      - eureka
+      - mongo
+    environment:
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_PORT=5672
+      - EUREKA_HOST=eureka
+      - EUREKA_PORT=8761
+      - MONGODB_HOST=mongo
+      - MONGODB_PORT=27017
+
+  uiclient:
+    build: /Users/franciscoalvarez/MyProjects/spring-cloud-examples/customers-stores/customers-stores-ui/
+    ports:
+      - "9900:9900"
+    links:
+      - eureka
+    environment:
+      - EUREKA_HOST=eureka
+      - EUREKA_PORT=8761
+
+
+  customer2:
+    build: /Users/franciscoalvarez/MyProjects/spring-cloud-examples/customers-stores/rest-microservices-customers/src/main/docker/
+    ports:
+      - "9001:9000"
+    links:
+      - rabbitmq
+      - eureka
+    environment:
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_PORT=5672
+      - EUREKA_HOST=eureka
+      - EUREKA_PORT=8761
+
+  store2:
+    build: /Users/franciscoalvarez/MyProjects/spring-cloud-examples/customers-stores/rest-microservices-store/src/main/docker/
+    ports:
+      - "8082:8081"
+    links:
+      - rabbitmq
+      - eureka
+      - mongo
+    environment:
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_PORT=5672
+      - EUREKA_HOST=eureka
+      - EUREKA_PORT=8761
+      - MONGODB_HOST=mongo
+      - MONGODB_PORT=27017
+
+  customer3:
+    build: /Users/franciscoalvarez/MyProjects/spring-cloud-examples/customers-stores/rest-microservices-customers/src/main/docker/
+    ports:
+      - "9002:9000"
+    links:
+      - rabbitmq
+      - eureka
+    environment:
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_PORT=5672
+      - EUREKA_HOST=eureka
+      - EUREKA_PORT=8761
+
+  store3:
+    build: /Users/franciscoalvarez/MyProjects/spring-cloud-examples/customers-stores/rest-microservices-store/src/main/docker/
+    ports:
+      - "8083:8081"
+    links:
+      - rabbitmq
+      - eureka
+      - mongo
+    environment:
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_PORT=5672
+      - EUREKA_HOST=eureka
+      - EUREKA_PORT=8761
+      - MONGODB_HOST=mongo
+      - MONGODB_PORT=27017
